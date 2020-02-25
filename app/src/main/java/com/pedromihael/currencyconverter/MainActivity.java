@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,27 +25,42 @@ public class MainActivity extends AppCompatActivity {
         this.mViewHolder.mInputValue = findViewById(R.id.edit_input_value);
         this.mViewHolder.mDollarValue = findViewById(R.id.text_dollar_output);
         this.mViewHolder.mEuroValue = findViewById(R.id.text_euro_output);
-        this.mViewHolder.mButtonCalculate = findViewById(R.id.button_calculate);
 
-        this.mViewHolder.mButtonCalculate.setOnClickListener(new View.OnClickListener() {
+        this.mViewHolder.mInputValue.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
-                convertCurrency(view);
+            public void beforeTextChanged (CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged (CharSequence s, int start, int before, int count) {
+                convertCurrency(s);
             }
+
+            @Override
+            public void afterTextChanged (Editable s) {}
         });
+
     }
 
-    public void convertCurrency(View view) {
-        Double dollarValue = Double.parseDouble(this.mViewHolder.mInputValue.getText().toString()) * 4;
-        Double euroValue = Double.parseDouble(this.mViewHolder.mInputValue.getText().toString()) * 5;
-        this.mViewHolder.mDollarValue.setText("U$" + dollarValue.toString());
-        this.mViewHolder.mEuroValue.setText("EU$" + euroValue.toString());
+    public void convertCurrency(CharSequence sequence) {
+        String newDollarView, newEuroView;
+
+        if (sequence.length() == 0) {
+            newDollarView = "US$0";
+            newEuroView = "EU$0";
+        } else {
+            Double dollarValue = Double.parseDouble(sequence.toString()) / 4;
+            Double euroValue = Double.parseDouble(sequence.toString()) / 5;
+            newDollarView = "US$" + String.format("%.2f", dollarValue);
+            newEuroView = "EU$" + String.format("%.2f", euroValue);
+        }
+
+        this.mViewHolder.mDollarValue.setText(newDollarView);
+        this.mViewHolder.mEuroValue.setText(newEuroView);
     }
 
     private class ViewHolder {
         EditText mInputValue;
         TextView mDollarValue;
         TextView mEuroValue;
-        Button mButtonCalculate;
     }
 }
