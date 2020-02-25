@@ -4,42 +4,40 @@ import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Currency {
 
-    private String mApiResponse;
-    private Double mDollar;
-    private Double mEuro;
+    private Double mDollar, mEuro;
+    private RequestQueue requestQueue;
 
-    /*
-    public Currency() {
-        RequestQueue requestQueue = new RequestQueue();
+    public Currency(RequestQueue requestQueue) {
         String url = "https://api.exchangeratesapi.io/latest?base=BRL";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        mApiResponse = response;
+                response -> {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        mDollar = jsonObject.getJSONObject("rates").getDouble("USD");
+                        mEuro = jsonObject.getJSONObject("rates").getDouble("EUR");
+                    } catch (JSONException err) {
+                        Log.d("Error", err.toString());
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("API-RESPONSE", "onErrorResponse: API ERROR: ", error);
-            }
-        });
 
-        requestQueue.add(stringRequest);
+                },
+                error -> Log.d("API-RESPONSE", "onErrorResponse: API ERROR: ", error));
+
+        this.requestQueue = requestQueue;
+        this.requestQueue.add(stringRequest);
     }
-*/
-    public void convertToDollar (Double realValue) {
-        // return valor convertido
+    public double convertToDollar (Double realValue) {
+        return realValue * this.mDollar;
     }
 
-    public void convertToEuro (Double realValue) {
-        // return valor convertido
+    public double convertToEuro (Double realValue) {
+        return realValue * this.mEuro;
     }
 
 }

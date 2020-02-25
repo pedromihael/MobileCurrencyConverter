@@ -8,10 +8,14 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
 public class MainActivity extends AppCompatActivity {
 
     private ViewHolder mViewHolder = new ViewHolder();
-    private Currency mCurrencyConverter = new Currency();
+    private RequestQueue mRequestQueue;
+    private Currency mCurrencyConverter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
         this.mViewHolder.mInputValue = findViewById(R.id.edit_input_value);
         this.mViewHolder.mDollarValue = findViewById(R.id.text_dollar_output);
         this.mViewHolder.mEuroValue = findViewById(R.id.text_euro_output);
+
+        this.mRequestQueue = Volley.newRequestQueue(this);
+        this.mCurrencyConverter = new Currency(this.mRequestQueue);
 
         this.mViewHolder.mInputValue.addTextChangedListener(new TextWatcher() {
             @Override
@@ -44,8 +51,9 @@ public class MainActivity extends AppCompatActivity {
             newDollarView = "US$0";
             newEuroView = "EU$0";
         } else {
-            Double dollarValue = Double.parseDouble(sequence.toString()) / 4;
-            Double euroValue = Double.parseDouble(sequence.toString()) / 5;
+            Double floatInputSequence = Double.parseDouble(sequence.toString());
+            Double dollarValue = this.mCurrencyConverter.convertToDollar(floatInputSequence);
+            Double euroValue = this.mCurrencyConverter.convertToEuro(floatInputSequence);
             newDollarView = "US$" + String.format("%.2f", dollarValue);
             newEuroView = "EU$" + String.format("%.2f", euroValue);
         }
