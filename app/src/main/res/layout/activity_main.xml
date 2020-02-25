@@ -37,6 +37,8 @@
                 android:layout_marginBottom="30dp"
                 android:inputType="numberDecimal"
                 android:text="@string/brl_input"
+                android:hint="Underline color change"
+                android:backgroundTint="#FF9800"
                 android:textColor="#BDBDBD"/>
 
             <RelativeLayout

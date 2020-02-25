@@ -4,6 +4,5 @@
     <string name="brl_input"></string>
     <string name="valor_dolar">Valor em dólar</string>
     <string name="valor_euro">Valor em euro</string>
-    <string name="calcular">Calcular</string>
     <string name="insert_value">Insira um valor para calcular!</string>
 </resources>
